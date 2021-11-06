@@ -13,6 +13,7 @@ from subprocess import PIPE, STDOUT
 import signal
 import re
 import threading
+from ffmpy improt FFmpeg
 
 from utils import *
 
@@ -182,7 +183,7 @@ def execute_tests(args):
                         main_logger.info("Start SVL simulator")
                         simulator_process = start_svl_simulator(tool_path)
 
-                    video_path = os.path.join(args.ouput, "Color", case["case"] + ".mp4")
+                    video_path = os.path.join(args.output, "Color", case["case"] + ".mp4")
 
                     if os.path.exists(video_path):
                         os.remove(video_path)

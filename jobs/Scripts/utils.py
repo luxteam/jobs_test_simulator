@@ -13,18 +13,18 @@ def close_process(process):
     for ch in child_processes:
         try:
             ch.terminate()
-            sleep(5)
+            sleep(2)
             ch.kill()
-            sleep(5)
+            sleep(2)
             status = ch.status()
         except psutil.NoSuchProcess:
             pass
 
     try:
         process.terminate()
-        sleep(5)
+        sleep(2)
         process.kill()
-        sleep(5)
+        sleep(2)
         status = process.status()
     except psutil.NoSuchProcess:
         pass
