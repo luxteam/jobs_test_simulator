@@ -12,6 +12,7 @@ import time
 from subprocess import PIPE, STDOUT
 import signal
 import re
+import threading
 
 from utils import *
 
@@ -117,6 +118,10 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
         json.dump(cases, file, indent=4)
 
 
+def record_video(descriptor):
+    descriptor.run()
+
+
 def start_svl_simulator(simulator_path):
     simulator_process = psutil.Popen(simulator_path, stdout=PIPE, stderr=PIPE, shell=True)
 
@@ -165,7 +170,8 @@ def execute_tests(args):
 
             error_messages = set()
 
-            video_recording_process = None
+            video_recording_descriptor = None
+            video_thread = None
 
             while current_try < args.retries:
                 try:
@@ -177,7 +183,16 @@ def execute_tests(args):
                         simulator_process = start_svl_simulator(tool_path)
 
                     video_path = os.path.join(args.ouput, "Color", case["case"] + ".mp4")
-                    video_recording_process = psutil.Popen("ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :0.0+100,200 {}".format(video_path), stdout=PIPE, stderr=PIPE, shell=True)
+
+                    if os.path.exists(video_path):
+                        os.remove(video_path)
+
+                    video_recording_descriptor = FFmpeg(
+                        outputs = {video_path: ['-video_size', '1920x1080', '-f', 'x11grab', '-i', ':0.0']}
+                    )
+
+                    video_thread = threading.Thread(target=record_video, args=(video_recording_descriptor,))
+                    video_thread.start()
 
                     for function in case["functions"]:
                         if re.match("((^\S+|^\S+ \S+) = |^print|^if|^for|^with)", function):
@@ -199,9 +214,9 @@ def execute_tests(args):
                     main_logger.error("Failed to execute test case (try #{}): {}".format(current_try, str(e)))
                     main_logger.error("Traceback: {}".format(traceback.format_exc()))
                 finally:
-                    if video_recording_process is not None:
-                        video_recording_process.send_signal(signal.SIGINT)
-                        video_recording_process = None
+                    if video_recording_descriptor is not None:
+                        video_recording_descriptor.process.terminate()
+                        video_recording_descriptor = None
 
                     current_try += 1
             else:
