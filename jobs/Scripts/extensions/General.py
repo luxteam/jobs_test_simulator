@@ -49,7 +49,10 @@ def execute(case_json_path):
     ego.connect_bridge(BRIDGE_HOST, BRIDGE_PORT)
 
     def on_collision(agent1, agent2, contact):
-        set_error(case_json_path, "{} collided with {}".format(agent1, agent2))
+        name1 = "STATIC OBSTACLE" if agent1 is None else agent1.name
+        name2 = "STATIC OBSTACLE" if agent2 is None else agent2.name
+        error_message = "{} collided with {}".format(name1, name2)
+        set_error(case_json_path, error_message)
         sys.exit()
 
     ego.on_collision(on_collision)

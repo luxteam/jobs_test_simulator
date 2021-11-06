@@ -13,7 +13,7 @@ from subprocess import PIPE, STDOUT
 import signal
 import re
 import threading
-from ffmpy improt FFmpeg
+from ffmpy import FFmpeg
 
 from utils import *
 
@@ -212,15 +212,15 @@ def execute_tests(args):
 
                     break
                 except Exception as e:
-                    if simulator_process is not None:
-                        close_process(simulator_process)
-                        simulator_process = None
-
                     execution_time = time.time() - case_start_time
                     save_results(args, case, cases, execution_time = execution_time, test_case_status = "failed", error_messages = error_messages)
                     main_logger.error("Failed to execute test case (try #{}): {}".format(current_try, str(e)))
                     main_logger.error("Traceback: {}".format(traceback.format_exc()))
                 finally:
+                    if simulator_process is not None:
+                        close_process(simulator_process)
+                        simulator_process = None
+
                     if video_recording_descriptor is not None:
                         video_recording_descriptor.process.terminate()
                         video_recording_descriptor = None
