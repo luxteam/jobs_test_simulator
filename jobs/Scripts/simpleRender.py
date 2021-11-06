@@ -7,11 +7,40 @@ import importlib.util
 from datetime import datetime
 from shutil import copyfile, rmtree
 import traceback
+import sys
+import time
+from subprocess import PIPE, STDOUT
+import signal
+import re
 
 from utils import *
 
+ROOT_PATH = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), os.path.pardir, os.path.pardir))
+sys.path.append(ROOT_PATH)
+from jobs_launcher.core.config import *
+from jobs_launcher.core.system_info import get_gpu
 
-def prepare_empty_reports(args, current_conf):
+
+def copy_test_cases(args):
+    try:
+        copyfile(os.path.realpath(os.path.join(os.path.dirname(
+            __file__), '..', 'Tests', args.test_group, 'test_cases.json')),
+            os.path.realpath(os.path.join(os.path.abspath(
+                args.output), 'test_cases.json')))
+
+        cases = json.load(open(os.path.realpath(
+            os.path.join(os.path.abspath(args.output), 'test_cases.json'))))
+
+        with open(os.path.join(os.path.abspath(args.output), "test_cases.json"), "r") as json_file:
+            cases = json.load(json_file)
+    except Exception as e:
+        main_logger.error('Can\'t load test_cases.json')
+        main_logger.error(str(e))
+        exit(-1)
+
+
+def prepare_empty_reports(args):
     main_logger.info('Create empty report files')
 
     with open(os.path.join(os.path.abspath(args.output), "test_cases.json"), "r") as json_file:
@@ -24,7 +53,7 @@ def prepare_empty_reports(args, current_conf):
 
             test_case_report = {}
             test_case_report['test_case'] = case['case']
-            test_case_report['render_device'] = args.server_gpu_name
+            test_case_report['render_device'] = get_gpu()
             test_case_report['script_info'] = case['script_info']
             test_case_report['test_group'] = args.test_group
             test_case_report['tool'] = 'SVL Simulator'
@@ -59,7 +88,7 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
     with open(os.path.join(args.output, case["case"] + CASE_REPORT_SUFFIX), "r") as file:
         test_case_report = json.loads(file.read())[0]
 
-        test_case_report["test_status"] = calculate_status(test_case_report["test_status"], test_case_status)
+        test_case_report["test_status"] = test_case_status
 
         test_case_report["execution_time"] = execution_time
 
@@ -92,7 +121,7 @@ def start_svl_simulator(simulator_path):
     simulator_process = psutil.Popen(simulator_path, stdout=PIPE, stderr=PIPE, shell=True)
 
     init_process = psutil.Popen("sh svlsim.sh cli initialize", stdout=PIPE, stderr=PIPE, shell=True)
-    out, err = p.communicate()
+    out, err = init_process.communicate()
 
     main_logger.info("Init process out: {}".format(out))
     main_logger.info("Init process err: {}".format(err))
@@ -101,7 +130,7 @@ def start_svl_simulator(simulator_path):
         raise Exception("Failed to run init script")
 
     simulation_start_process = psutil.Popen("sh svlsim.sh simulation start {}".format(args.simulation_id), stdout=PIPE, stderr=PIPE, shell=True)
-    out, err = p.communicate()
+    out, err = simulation_start_process.communicate()
 
     main_logger.info("Simulation start process out: {}".format(out))
     main_logger.info("Simulation start process err: {}".format(err))
@@ -112,7 +141,7 @@ def start_svl_simulator(simulator_path):
     return simulator_process
 
 
-def execute_tests(args, current_conf):
+def execute_tests(args):
     rc = 0
 
     with open(os.path.join(os.path.abspath(args.output), "test_cases.json"), "r") as json_file:
@@ -147,7 +176,7 @@ def execute_tests(args, current_conf):
                         main_logger.info("Start SVL simulator")
                         simulator_process = start_svl_simulator(tool_path)
 
-                    video_path = os.path.join("Color", case["case"] + ".mp4")
+                    video_path = os.path.join(args.ouput, "Color", case["case"] + ".mp4")
                     video_recording_process = psutil.Popen("ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :0.0+100,200 {}".format(video_path), stdout=PIPE, stderr=PIPE, shell=True)
 
                     for function in case["functions"]:
@@ -170,8 +199,8 @@ def execute_tests(args, current_conf):
                     main_logger.error("Failed to execute test case (try #{}): {}".format(current_try, str(e)))
                     main_logger.error("Traceback: {}".format(traceback.format_exc()))
                 finally:
-                    if video_recording_process != None:
-                        video_recording_process.send_signal(signal.CTRL_C_EVENT)
+                    if video_recording_process is not None:
+                        video_recording_process.send_signal(signal.SIGINT)
                         video_recording_process = None
 
                     current_try += 1
@@ -218,8 +247,9 @@ if __name__ == '__main__':
         if not os.path.exists(os.path.join(args.output, "tool_logs")):
             os.makedirs(os.path.join(args.output, "tool_logs"))
 
-        prepare_empty_reports(args, current_conf)
-        exit(execute_tests(args, current_conf))
+        copy_test_cases(args)
+        prepare_empty_reports(args)
+        exit(execute_tests(args))
     except Exception as e:
         main_logger.error("Failed during script execution. Exception: {}".format(str(e)))
         main_logger.error("Traceback: {}".format(traceback.format_exc()))

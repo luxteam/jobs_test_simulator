@@ -3,9 +3,9 @@
 
     <outpath value="{OutputDir}"/>
 
-    <execute command='python "{ResourcesDir}\simpleRender.py"' timeout="1800">
-        <argument>--client_tool "{Tool}"</argument>
-        <argument>--output "{OutputDir}\\"</argument>
+    <execute command='python "{ResourcesDir}/simpleRender.py"' timeout="1800">
+        <argument>--tool "{Tool}"</argument>
+        <argument>--output "{OutputDir}"</argument>
         <argument>--test_group "General"</argument>
         <argument>--simulation_id "3f18d584-a572-46ff-b6f0-fb1862664c4f"</argument>
         <argument>--retries {retries}</argument>
@@ -13,7 +13,6 @@
 
     <execute command='python "{ResourcesDir}/makeCompareReport.py"'>
         <argument>--work_dir "{OutputDir}"</argument>
-        <argument>--execution_type "{executionType}"</argument>
     </execute>
 
 </job-manifest>
