@@ -8,6 +8,7 @@
         <argument>--output "{OutputDir}\\"</argument>
         <argument>--test_group "General"</argument>
         <argument>--simulation_id "3f18d584-a572-46ff-b6f0-fb1862664c4f"</argument>
+        <argument>--retries {retries}</argument>
     </execute>
 
     <execute command='python "{ResourcesDir}/makeCompareReport.py"'>

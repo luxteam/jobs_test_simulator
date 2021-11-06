@@ -200,6 +200,7 @@ def createArgsParser():
     parser.add_argument("--output", required=True, metavar="<dir>")
     parser.add_argument("--test_group", required=True)
     parser.add_argument("--simulation_id", required=True)
+    parser.add_argument("--retries", required=False, default=2, type=int)
 
     return parser
 
