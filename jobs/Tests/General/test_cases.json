@@ -1,0 +1,22 @@
+[
+    {
+        "case": "SIM_GEN_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")()"
+        ],
+        "script_info": [
+            "Sample test case #1"
+        ]
+    },
+    {
+        "case": "SIM_GEN_002",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")()"
+        ],
+        "script_info": [
+            "Sample test case #2"
+        ]
+    }
+]
