@@ -2,8 +2,10 @@ from datetime import datetime
 from environs import Env
 import random
 import lgsvl
+from actions import *
 
-def execute():
+
+def execute(case_json_path):
     env = Env()
 
     SIMULATOR_HOST = env.str("LGSVL__SIMULATOR_HOST", "127.0.0.1")
@@ -47,6 +49,7 @@ def execute():
     ego.connect_bridge(BRIDGE_HOST, BRIDGE_PORT)
 
     def on_collision(agent1, agent2, contact):
+        set_error(case_json_path, "{} collided with {}".format(agent1, agent2))
         sys.exit()
 
     ego.on_collision(on_collision)
@@ -74,5 +77,7 @@ def execute():
     print("adding npcs")
     sim.add_random_agents(lgsvl.AgentType.NPC)
     sim.add_random_agents(lgsvl.AgentType.PEDESTRIAN)
+
+    set_passed(case_json_path)
 
     sim.run(LGSVL__SIMULATION_DURATION_SECS)

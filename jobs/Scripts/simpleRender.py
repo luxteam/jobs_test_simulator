@@ -90,7 +90,11 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
     with open(os.path.join(args.output, case["case"] + CASE_REPORT_SUFFIX), "r") as file:
         test_case_report = json.loads(file.read())[0]
 
-        test_case_report["test_status"] = test_case_status
+        # if status is None - it's already saved in json file by simulation script
+        if test_case_status != None:
+            test_case_report["test_status"] = test_case_status
+        else:
+            test_case_status = test_case_report["test_status"]
 
         test_case_report["execution_time"] = execution_time
 
@@ -120,7 +124,7 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
 
 
 def record_video(descriptor):
-    descriptor.run()
+    descriptor.run(stdout=PIPE, stderr=PIPE)
 
 
 def start_svl_simulator(simulator_path):
@@ -195,6 +199,8 @@ def execute_tests(args):
                     video_thread = threading.Thread(target=record_video, args=(video_recording_descriptor,))
                     video_thread.start()
 
+                    case_json_path = os.path.join(args.output, case["case"] + CASE_REPORT_SUFFIX)
+
                     for function in case["functions"]:
                         if re.match("((^\S+|^\S+ \S+) = |^print|^if|^for|^with)", function):
                             exec(function)
@@ -202,7 +208,7 @@ def execute_tests(args):
                             eval(function)
 
                     execution_time = time.time() - case_start_time
-                    save_results(args, case, cases, execution_time = execution_time, test_case_status = "passed", error_messages = [])
+                    save_results(args, case, cases, execution_time = execution_time, test_case_status = None, error_messages = [])
 
                     break
                 except Exception as e:
