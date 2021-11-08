@@ -124,6 +124,7 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
 
 
 def record_video(descriptor):
+    time.sleep(3)
     descriptor.run(stdout=PIPE, stderr=PIPE)
 
 
@@ -193,7 +194,7 @@ def execute_tests(args):
                         os.remove(video_path)
 
                     video_recording_descriptor = FFmpeg(
-                        outputs = {video_path: ['-video_size', '1920x1080', '-f', 'x11grab', '-i', ':0.0']}
+                        outputs = {video_path: ['-video_size', '1920x1080', '-f', 'x11grab', '-i', ':0.0', '-pix_fmt', 'yuv420p']}
                     )
 
                     video_thread = threading.Thread(target=record_video, args=(video_recording_descriptor,))
@@ -217,13 +218,13 @@ def execute_tests(args):
                     main_logger.error("Failed to execute test case (try #{}): {}".format(current_try, str(e)))
                     main_logger.error("Traceback: {}".format(traceback.format_exc()))
                 finally:
-                    if simulator_process is not None:
-                        close_process(simulator_process)
-                        simulator_process = None
-
                     if video_recording_descriptor is not None:
                         video_recording_descriptor.process.terminate()
                         video_recording_descriptor = None
+                    
+                    if simulator_process is not None:
+                        close_process(simulator_process)
+                        simulator_process = None
 
                     current_try += 1
             else:
