@@ -1,6 +1,31 @@
 import json
 import os
 import argparse
+import glob
+
+
+def metrics_stat(work_dir):
+    metrics_report = []
+    metrics_dir = os.path.join(work_dir, 'metrics_logs')
+    metric_files = glob.glob(os.path.join(metrics_dir, '*.log'))
+    report_files = glob.glob(os.path.join(work_dir, '*_RPR.json'))
+
+    for metric_file in metric_files:
+        intervals_dict = {}
+
+        for report_file in report_files:
+            with open(report_file, 'r') as f:
+                report = json.load(f)[0]
+
+                intervals_dict[report['test_case']] = (report['render_start_time'], report['render_end_time'])
+
+        metrics_report.append({
+            'metric': os.path.basename(metric_file).split('.log')[0],
+            'cases': perf_parser.parse_cases_metric(metric_file, intervals_dict)
+        })
+
+    with open(os.path.realpath(os.path.join(work_dir, '..', os.path.basename(work_dir) + '_metrics.json')), 'w') as f:
+        json.dump(metrics_report, f, indent=4)
 
 
 if __name__ == '__main__':
@@ -8,6 +33,8 @@ if __name__ == '__main__':
     parser.add_argument('--work_dir', required=True)
     args = parser.parse_args()
     work_dir = args.work_dir
+
+    metrics_stat(work_dir)
 
     json_files = list(
         filter(

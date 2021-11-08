@@ -23,6 +23,12 @@ sys.path.append(ROOT_PATH)
 from jobs_launcher.core.config import *
 from jobs_launcher.core.system_info import get_gpu
 
+SYS_MON_CMD = [
+    'python',
+    os.path.join(ROOT_DIR, 'jobs_launcher', 'core', 'system_monitor.py'),
+    'trace','--interval', '1', '--profile', 'full'
+]
+
 
 def copy_test_cases(args):
     try:
@@ -110,6 +116,9 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
 
         video_path = os.path.join("Color", case["case"] + ".mp4")
 
+        test_case_report["render_start_time"] = case["render_start_time"]
+        test_case_report["render_end_time"] = case["render_end_time"]
+
         if os.path.exists(os.path.join(args.output, video_path)):
             test_case_report[VIDEO_KEY] = video_path
 
@@ -178,6 +187,7 @@ def execute_tests(args):
 
             video_recording_descriptor = None
             video_thread = None
+            monitor_process = None
 
             while current_try < args.retries:
                 try:
@@ -202,17 +212,25 @@ def execute_tests(args):
 
                     case_json_path = os.path.join(args.output, case["case"] + CASE_REPORT_SUFFIX)
 
+                    # start metrics collection
+                    monitor_process = psutil.Popen(SYS_MON_CMD, stdout=PIPE, stderr=PIPE)
+
+                    case['render_start_time'] = datetime.datetime.now()
+
                     for function in case["functions"]:
                         if re.match("((^\S+|^\S+ \S+) = |^print|^if|^for|^with)", function):
                             exec(function)
                         else:
                             eval(function)
 
+                    case['render_end_time'] = datetime.datetime.now()
+
                     execution_time = time.time() - case_start_time
                     save_results(args, case, cases, execution_time = execution_time, test_case_status = None, error_messages = [])
 
                     break
                 except Exception as e:
+                    case['render_end_time'] = datetime.datetime.now()
                     execution_time = time.time() - case_start_time
                     save_results(args, case, cases, execution_time = execution_time, test_case_status = "failed", error_messages = error_messages)
                     main_logger.error("Failed to execute test case (try #{}): {}".format(current_try, str(e)))
@@ -221,6 +239,10 @@ def execute_tests(args):
                     if video_recording_descriptor is not None:
                         video_recording_descriptor.process.terminate()
                         video_recording_descriptor = None
+
+                    if monitor_process is not None:
+                        close_process(monitor_process)
+                        monitor_process = None
                     
                     if simulator_process is not None:
                         close_process(simulator_process)
