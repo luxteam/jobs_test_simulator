@@ -2,11 +2,18 @@ import json
 import os
 import argparse
 import glob
+import sys
+
+
+sys.path.append(os.path.abspath(os.path.join(
+    os.path.dirname(__file__), os.path.pardir, os.path.pardir)))
+
+import jobs_launcher.core.performance_parser as perf_parser
 
 
 def metrics_stat(work_dir):
     metrics_report = []
-    metrics_dir = os.path.join(work_dir, 'metrics_logs')
+    metrics_dir = os.path.join('metrics_logs')
     metric_files = glob.glob(os.path.join(metrics_dir, '*.log'))
     report_files = glob.glob(os.path.join(work_dir, '*_RPR.json'))
 

@@ -24,8 +24,8 @@ from jobs_launcher.core.config import *
 from jobs_launcher.core.system_info import get_gpu
 
 SYS_MON_CMD = [
-    'python',
-    os.path.join(ROOT_DIR, 'jobs_launcher', 'core', 'system_monitor.py'),
+    'python3.9',
+    os.path.join(ROOT_PATH, 'jobs_launcher', 'core', 'system_monitor.py'),
     'trace','--interval', '1', '--profile', 'full'
 ]
 
@@ -215,7 +215,7 @@ def execute_tests(args):
                     # start metrics collection
                     monitor_process = psutil.Popen(SYS_MON_CMD, stdout=PIPE, stderr=PIPE)
 
-                    case['render_start_time'] = datetime.datetime.now()
+                    case['render_start_time'] = str(datetime.now())
 
                     for function in case["functions"]:
                         if re.match("((^\S+|^\S+ \S+) = |^print|^if|^for|^with)", function):
@@ -223,14 +223,14 @@ def execute_tests(args):
                         else:
                             eval(function)
 
-                    case['render_end_time'] = datetime.datetime.now()
+                    case['render_end_time'] = str(datetime.now())
 
-                    execution_time = time.time() - case_start_time
+                    execution_time = time.time() - {case_start_time}
                     save_results(args, case, cases, execution_time = execution_time, test_case_status = None, error_messages = [])
 
                     break
                 except Exception as e:
-                    case['render_end_time'] = datetime.datetime.now()
+                    case['render_end_time'] = str(datetime.now())
                     execution_time = time.time() - case_start_time
                     save_results(args, case, cases, execution_time = execution_time, test_case_status = "failed", error_messages = error_messages)
                     main_logger.error("Failed to execute test case (try #{}): {}".format(current_try, str(e)))
