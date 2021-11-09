@@ -39,27 +39,12 @@ def execute(case_json_path):
     # select spawn deterministically depending on the seed
     spawn_index = LGSVL__RANDOM_SEED % len(spawns)
 
-    state = lgsvl.AgentState()
-    state.transform = spawns[spawn_index]  # TODO some sort of Env Variable so that user/wise can select from list
-    print("Loading vehicle {}...".format(vehicle_conf))
-    ego = sim.add_agent(vehicle_conf, lgsvl.AgentType.EGO, state)
-
-    print("Connecting to bridge...")
-    # The EGO is now looking for a bridge at the specified IP and port
-    ego.connect_bridge(BRIDGE_HOST, BRIDGE_PORT)
-
     def on_collision(agent1, agent2, contact):
         name1 = "STATIC OBSTACLE" if agent1 is None else agent1.name
         name2 = "STATIC OBSTACLE" if agent2 is None else agent2.name
         error_message = "{} collided with {}".format(name1, name2)
         set_passed(case_json_path)
         sys.exit()
-
-    ego.on_collision(on_collision)
-
-    dv = lgsvl.dreamview.Connection(sim, ego, BRIDGE_HOST)
-    dv.set_hd_map(LGSVL__AUTOPILOT_HD_MAP)
-    dv.set_vehicle(LGSVL__AUTOPILOT_0_VEHICLE_CONFIG)
 
     destination_index = LGSVL__RANDOM_SEED % len(spawns[spawn_index].destinations)
     destination = spawns[spawn_index].destinations[destination_index] # TODO some sort of Env Variable so that user/wise can select from list
@@ -74,14 +59,20 @@ def execute(case_json_path):
         'Recorder'
     ]
 
-    dv.disable_apollo()
-    dv.setup_apollo(destination.position.x, destination.position.z, default_modules)
-
     print("adding npcs")
     # school bus, 20m ahead, perpendicular to road, stopped
     state = lgsvl.AgentState()
+    forward = lgsvl.utils.transform_to_forward(spawns[0])
+    right = lgsvl.utils.transform_to_right(spawns[0])
     state.transform.position = spawns[0].position + 20.0 * forward
     state.transform.rotation.y = spawns[0].rotation.y + 90.0
     bus = sim.add_agent("SchoolBus", lgsvl.AgentType.NPC, state)
+
+    state = lgsvl.AgentState()
+    state.velocity = 6 * forward
+    state.transform = spawns[spawn_index]  # TODO some sort of Env Variable so that user/wise can select from list
+    print("Loading vehicle {}...".format(vehicle_conf))
+    ego = sim.add_agent(vehicle_conf, lgsvl.AgentType.EGO, state)
+    ego.on_collision(on_collision)
 
     sim.run(LGSVL__SIMULATION_DURATION_SECS)
