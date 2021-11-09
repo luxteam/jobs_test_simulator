@@ -1,0 +1,52 @@
+[
+    {
+        "case": "SIM_WTH_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, \"rain\", 0.5)"
+        ],
+        "script_info": [
+            "Rain: 50%"
+        ]
+    },
+    {
+        "case": "SIM_WTH_002",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, \"fog\", 0.5)"
+        ],
+        "script_info": [
+            "Fog: 50%"
+        ]
+    },
+    {
+        "case": "SIM_WTH_003",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, \"wetness\", 0.5)"
+        ],
+        "script_info": [
+            "Wetness: 50%"
+        ]
+    },
+    {
+        "case": "SIM_WTH_004",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, \"cloudiness\", 0.5)"
+        ],
+        "script_info": [
+            "Cloudiness: 50%"
+        ]
+    },
+    {
+        "case": "SIM_WTH_005",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, \"damage\", 0.5)"
+        ],
+        "script_info": [
+            "Damage: 50%"
+        ]
+    }
+]
