@@ -8,17 +8,18 @@ import threading
 from actions import *
 
 
-def make_screen(path, image_name):
+def make_screen(ego, path, image_name):
+    sensors = ego.get_sensors()
     for s in sensors:
         if s.name == "Main Camera":
             s.save(os.path.join(path, image_name), quality=75)
             break
 
 
-def make_screens(path, image_name):
-    for i in range(5):
+def do_camera_screenshots(ego, path, image_name, number=5):
+    for i in range(number):
         time.sleep(10)
-        make_screen(path, image_name + "_" + str(i) + ".jpg")
+        make_screen(ego, path, image_name + "_" + str(i) + ".jpg")
 
 
 def execute(case_json_path, image_output_path, image_name):
@@ -94,7 +95,7 @@ def execute(case_json_path, image_output_path, image_name):
     dv.setup_apollo(destination.position.x, destination.position.z, default_modules)
 
     print("start screenshots making")
-    screenshots_thread = threading.Thread(target=make_screen, args=(image_output_path, image_name))
+    screenshots_thread = threading.Thread(target=do_camera_screenshots, args=(ego, image_output_path, image_name))
     screenshots_thread.start()
 
     set_passed(case_json_path)
