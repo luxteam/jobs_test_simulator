@@ -1,0 +1,12 @@
+[
+    {
+        "case": "SIM_AUT_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path)"
+        ],
+        "script_info": [
+            "Auto: Lincoln2017MKZ_LGSVL"
+        ]
+    }
+]
