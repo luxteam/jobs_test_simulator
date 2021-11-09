@@ -122,6 +122,9 @@ def save_results(args, case, cases, execution_time = 0.0, test_case_status = "",
         if os.path.exists(os.path.join(args.output, video_path)):
             test_case_report[VIDEO_KEY] = video_path
 
+        if args.test_group == "Camera":
+            test_case_report[SCREENS_PATH_KEY] = os.path.join(args.output, "Color", case["case"])
+
     with open(os.path.join(args.output, case["case"] + CASE_REPORT_SUFFIX), "w") as file:
         json.dump([test_case_report], file, indent=4)
 

@@ -1,0 +1,12 @@
+[
+    {
+        "case": "SIM_CAM_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, os.path.join(args.output, \"Color\"), case[\"case\"])"
+        ],
+        "script_info": [
+            "Make screenshots by camera"
+        ]
+    }
+]
