@@ -3,50 +3,50 @@
         "case": "SIM_WEA_001",
         "status": "active",
         "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"rain\", 0.5)"
+            "getattr(group_module, \"execute\")(case_json_path, \"rain\", 1.0)"
         ],
         "script_info": [
-            "Rain: 50%"
+            "Rain: 100%"
         ]
     },
     {
         "case": "SIM_WEA_002",
         "status": "active",
         "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"fog\", 0.5)"
+            "getattr(group_module, \"execute\")(case_json_path, \"fog\", 1.0)"
         ],
         "script_info": [
-            "Fog: 50%"
+            "Fog: 100%"
         ]
     },
     {
         "case": "SIM_WEA_003",
         "status": "active",
         "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"wetness\", 0.5)"
+            "getattr(group_module, \"execute\")(case_json_path, \"wetness\", 1.0)"
         ],
         "script_info": [
-            "Wetness: 50%"
+            "Wetness: 100%"
         ]
     },
     {
         "case": "SIM_WEA_004",
         "status": "active",
         "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"cloudiness\", 0.5)"
+            "getattr(group_module, \"execute\")(case_json_path, \"cloudiness\", 1.0)"
         ],
         "script_info": [
-            "Cloudiness: 50%"
+            "Cloudiness: 100%"
         ]
     },
     {
         "case": "SIM_WEA_005",
         "status": "active",
         "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"damage\", 0.5)"
+            "getattr(group_module, \"execute\")(case_json_path, \"damage\", 1.0)"
         ],
         "script_info": [
-            "Damage: 50%"
+            "Damage: 100%"
         ]
     }
 ]

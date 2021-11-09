@@ -82,20 +82,16 @@ def execute(case_json_path, weather_type, intensity):
     sim.add_random_agents(lgsvl.AgentType.PEDESTRIAN)
 
     print("set weather")
-    weather = sim.weather
-
     if weather_type == "rain":
-        weather.rain = intensity
+        sim.weather = lgsvl.WeatherState(rain=intensity, fog=0, wetness=0, cloudiness=0, damage=0)
     elif weather_type == "fog":
-        weather.fog = intensity
+        sim.weather = lgsvl.WeatherState(rain=0, fog=intensity, wetness=0, cloudiness=0, damage=0)
     elif weather_type == "wetness":
-        weather.wetness = intensity
+        sim.weather = lgsvl.WeatherState(rain=0, fog=0, wetness=intensity, cloudiness=0, damage=0)
     elif weather_type == "cloudiness":
-        weather.cloudiness = intensity
+        sim.weather = lgsvl.WeatherState(rain=0, fog=0, wetness=0, cloudiness=intensity, damage=0)
     elif weather_type == "damage":
-        weather.damage = intensity
-
-    sim.weather = weather
+        sim.weather = lgsvl.WeatherState(rain=0, fog=0, wetness=0, cloudiness=0, damage=intensity)
 
     set_passed(case_json_path)
 
