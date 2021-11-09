@@ -33,7 +33,7 @@ def execute(case_json_path, time_of_day):
 
 
     # reset time of the day
-    sim.set_date_time(datetime(2020, 7, 1, 15, 0, 0, 0), True)
+    sim.set_date_time(datetime.strptime(time_of_day, '%Y-%m-%d %H:%M:%S'), True)
 
     spawns = sim.get_spawn()
     # select spawn deterministically depending on the seed
@@ -80,9 +80,6 @@ def execute(case_json_path, time_of_day):
     print("adding npcs")
     sim.add_random_agents(lgsvl.AgentType.NPC)
     sim.add_random_agents(lgsvl.AgentType.PEDESTRIAN)
-
-    print("set time of day")
-    datetime.strptime(time_of_day, '%Y-%m-%d %H:%M:%S')
 
     set_passed(case_json_path)
 
