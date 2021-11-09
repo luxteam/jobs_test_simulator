@@ -1,6 +1,6 @@
 [
     {
-        "case": "SIM_WTH_001",
+        "case": "SIM_WEA_001",
         "status": "active",
         "functions": [
             "getattr(group_module, \"execute\")(case_json_path, \"rain\", 0.5)"
@@ -10,7 +10,7 @@
         ]
     },
     {
-        "case": "SIM_WTH_002",
+        "case": "SIM_WEA_002",
         "status": "active",
         "functions": [
             "getattr(group_module, \"execute\")(case_json_path, \"fog\", 0.5)"
@@ -20,7 +20,7 @@
         ]
     },
     {
-        "case": "SIM_WTH_003",
+        "case": "SIM_WEA_003",
         "status": "active",
         "functions": [
             "getattr(group_module, \"execute\")(case_json_path, \"wetness\", 0.5)"
@@ -30,7 +30,7 @@
         ]
     },
     {
-        "case": "SIM_WTH_004",
+        "case": "SIM_WEA_004",
         "status": "active",
         "functions": [
             "getattr(group_module, \"execute\")(case_json_path, \"cloudiness\", 0.5)"
@@ -40,7 +40,7 @@
         ]
     },
     {
-        "case": "SIM_WTH_005",
+        "case": "SIM_WEA_005",
         "status": "active",
         "functions": [
             "getattr(group_module, \"execute\")(case_json_path, \"damage\", 0.5)"

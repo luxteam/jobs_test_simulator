@@ -5,7 +5,7 @@ import lgsvl
 from actions import *
 
 
-def execute(case_json_path, weather_type, intensity):
+def execute(case_json_path):
     env = Env()
 
     SIMULATOR_HOST = env.str("LGSVL__SIMULATOR_HOST", "127.0.0.1")
@@ -77,25 +77,40 @@ def execute(case_json_path, weather_type, intensity):
     dv.disable_apollo()
     dv.setup_apollo(destination.position.x, destination.position.z, default_modules)
 
-    print("adding npcs")
-    sim.add_random_agents(lgsvl.AgentType.NPC)
-    sim.add_random_agents(lgsvl.AgentType.PEDESTRIAN)
+    print("adding pedestrians")
+    pedestrians_names = [
+        "Bob",
+        "EntrepreneurFemale",
+        "Howard",
+        "Johny",
+        "Pamela",
+        "Presley",
+        "Robin",
+        "Stephen",
+        "Zoe",
+    ]
 
-    print("set weather")
-    weather = sim.weather
+    print("Creating 120 pedestrians")
+    for i in range(20 * 6):
+        # Create peds in a block
+        start = (
+            spawns[0].position
+            + (5 + (1.0 * (i // 6))) * forward
+            - (2 + (1.0 * (i % 6))) * right
+        )
+        end = start + 10 * forward
 
-    if weather_type == "rain":
-        weather.rain = intensity
-    elif weather_type == "fog":
-        weather.fog = intensity
-    elif weather_type == "wetness":
-        weather.wetness = intensity
-    elif weather_type == "cloudiness":
-        weather.cloudiness = intensity
-    elif weather_type == "damage":
-        weather.damage = intensity
+        # Give waypoints for the spawn location and 10m ahead
+        wp = [lgsvl.WalkWaypoint(start, 0), lgsvl.WalkWaypoint(end, 0)]
 
-    sim.weather = weather
+        state = lgsvl.AgentState()
+        state.transform.position = start
+        state.transform.rotation = spawns[0].rotation
+        name = random.choice(pedestrians_names)
+
+        # Send the waypoints and make the pedestrian loop over the waypoints
+        p = sim.add_agent(name, lgsvl.AgentType.PEDESTRIAN, state)
+        p.follow(wp, True)
 
     set_passed(case_json_path)
 
