@@ -1,0 +1,12 @@
+[
+    {
+        "case": "SIM_TOD_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path, \"2021-01-01 00:00:00\")"
+        ],
+        "script_info": [
+            "Time of day: midnight"
+        ]
+    }
+]
