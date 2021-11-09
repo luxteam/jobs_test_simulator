@@ -10,16 +10,6 @@
         ]
     },
     {
-        "case": "SIM_TOD_001",
-        "status": "active",
-        "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"2021-01-01 06:00:00\")"
-        ],
-        "script_info": [
-            "Time of day: morning"
-        ]
-    },
-    {
         "case": "SIM_TOD_002",
         "status": "active",
         "functions": [
@@ -27,16 +17,6 @@
         ],
         "script_info": [
             "Time of day: midday"
-        ]
-    },
-    {
-        "case": "SIM_TOD_004",
-        "status": "active",
-        "functions": [
-            "getattr(group_module, \"execute\")(case_json_path, \"2021-01-01 18:00:00\")"
-        ],
-        "script_info": [
-            "Time of day: evening"
         ]
     }
 ]
