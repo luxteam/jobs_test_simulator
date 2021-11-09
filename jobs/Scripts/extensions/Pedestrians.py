@@ -91,6 +91,13 @@ def execute(case_json_path):
     ]
 
     print("Creating 120 pedestrians")
+    spawns = sim.get_spawn()
+
+    state = lgsvl.AgentState()
+    state.transform = spawns[0]
+    forward = lgsvl.utils.transform_to_forward(spawns[0])
+    right = lgsvl.utils.transform_to_right(spawns[0])
+    
     for i in range(20 * 6):
         # Create peds in a block
         start = (
