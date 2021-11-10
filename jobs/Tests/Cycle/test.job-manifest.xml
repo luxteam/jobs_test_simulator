@@ -6,7 +6,7 @@
     <execute command='python "{ResourcesDir}/simpleRender.py"' timeout="1800">
         <argument>--tool "{Tool}"</argument>
         <argument>--output "{OutputDir}"</argument>
-        <argument>--test_group "General"</argument>
+        <argument>--test_group "Cycle"</argument>
         <argument>--simulation_id "3f18d584-a572-46ff-b6f0-fb1862664c4f"</argument>
         <argument>--retries {retries}</argument>
     </execute>
