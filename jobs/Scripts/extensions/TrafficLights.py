@@ -5,7 +5,7 @@ import lgsvl
 from actions import *
 
 
-def execute(case_json_path):
+def execute(case_json_path, trigger, green, yellow, red):
     env = Env()
 
     SIMULATOR_HOST = env.str("LGSVL__SIMULATOR_HOST", "127.0.0.1")
@@ -80,25 +80,25 @@ def execute(case_json_path):
     print("Setup traffic lights behaviour")
     controllables = sim.get_controllables("signal")
     print("\n# List of controllable objects in {} scene:".format(lgsvl.wise.DefaultAssets.map_borregasave))
-    for get_controllables in controllables:
+    for controllable in controllables:
         print(controllable)
 
-    # Get current controllable states
-    print("\n# Current control policy:")
-    print(signal.control_policy)
+        # Get current controllable states
+        print("\n# Current control policy:")
+        print(controllable.control_policy)
 
-    # Create a new control policy
-    control_policy = "trigger=50;green=1;yellow=1;red=1;loop"
+        # Create a new control policy
+        control_policy = "trigger={trigger};green={green};yellow={yellow};red={red};loop".format(trigger=trigger, green=green, yellow=yellow, red=red)
 
-    # Control this traffic light with a new control policy
-    signal.control(control_policy)
+        # Control this traffic light with a new control policy
+        controllable.control(control_policy)
 
-    print("\n# Updated control policy:")
-    print(signal.control_policy)
+        print("\n# Updated control policy:")
+        print(controllable.control_policy)
 
-    # Get current state of signal
-    print("\n# Current signal state before simulation:")
-    print(signal.current_state)
+        # Get current state of signal
+        print("\n# Current signal state before simulation:")
+        print(controllable.current_state)
 
     set_passed(case_json_path)
 
