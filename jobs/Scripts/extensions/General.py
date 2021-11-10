@@ -77,10 +77,6 @@ def execute(case_json_path):
     dv.disable_apollo()
     dv.setup_apollo(destination.position.x, destination.position.z, default_modules)
 
-    print("adding npcs")
-    sim.add_random_agents(lgsvl.AgentType.NPC)
-    sim.add_random_agents(lgsvl.AgentType.PEDESTRIAN)
-
     set_passed(case_json_path)
 
     sim.run(LGSVL__SIMULATION_DURATION_SECS)
