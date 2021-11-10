@@ -1,0 +1,12 @@
+[
+    {
+        "case": "SIM_CYC_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path)"
+        ],
+        "script_info": [
+            "Agent drive in circle"
+        ]
+    }
+]
