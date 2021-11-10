@@ -15,7 +15,7 @@ def execute(case_json_path, weather_type, intensity):
 
     LGSVL__AUTOPILOT_HD_MAP = env.str("LGSVL__AUTOPILOT_HD_MAP", "Borregas Ave")
     LGSVL__AUTOPILOT_0_VEHICLE_CONFIG = env.str("LGSVL__AUTOPILOT_0_VEHICLE_CONFIG", 'Lincoln2017MKZ_LGSVL')
-    LGSVL__SIMULATION_DURATION_SECS = 120.0
+    LGSVL__SIMULATION_DURATION_SECS = 90.0
     LGSVL__RANDOM_SEED = env.int("LGSVL__RANDOM_SEED", 51472)
 
     vehicle_conf = env.str("LGSVL__VEHICLE_0", lgsvl.wise.DefaultAssets.ego_lincoln2017mkz_apollo6_modular)
