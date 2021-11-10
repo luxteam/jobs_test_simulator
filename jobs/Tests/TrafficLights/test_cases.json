@@ -1,0 +1,15 @@
+[
+    {
+        "case": "SIM_TL_001",
+        "status": "active",
+        "functions": [
+            "getattr(group_module, \"execute\")(case_json_path)"
+        ],
+        "script_info": [
+            "Target: 50",
+            "Green: 1s",
+            "Yellow: 1s",
+            "Red: 1s"
+        ]
+    }
+]
